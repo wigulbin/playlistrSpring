@@ -1,0 +1,17 @@
+<html>
+<head><title>Home Page</title></head>
+<body>
+<h1>Hello !</h1>
+<p>Welcome to <!--/*@thymesVar id="appName" type="java.lang.String"*/-->
+    <span th:text="${appName}">Our App</span></p>
+<span th:text="${code}">Code</span></p>
+</body>
+
+<script>
+    function loadPlaylists() {
+        fetch('http://localhost:8081/playlists')
+            .then(res => res.text())
+            .then(res => console.log(res));
+    }
+</script>
+</html>
