@@ -2,60 +2,44 @@ package com.augmen.playlistr.Spotify.API;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.sound.midi.Track;
 import java.util.List;
 
-@XmlRootElement
-public class  UserProfile {
-    private String country = "";
-    @JsonProperty("display_name")
-    private String displayName = "";
-    private String email = "";
-    @JsonProperty("explicit_content")
-    private ExplicitContent explicitContent;
+public class Playlist {
+    private boolean collaborative;
+    private String description = "";
     @JsonProperty("external_urls")
     private ExternalUrls externalUrls;
     private Followers followers;
     private String href = "";
     private String id = "";
     private List<Image> images;
-    private String product = "";
+    private String name = "";
+    @JsonProperty("public")
+    private boolean publicPlaylist;
+    @JsonProperty("snapshot_id")
+    private String snapshotid;
+    private Tracks tracks;
     private String type = "";
     private String uri = "";
 
-    public UserProfile() {
+    public Playlist() {
     }
 
-    public String getCountry() {
-        return country;
+    public boolean isCollaborative() {
+        return collaborative;
     }
 
-    public void setCountry(String country) {
-        this.country = country;
+    public void setCollaborative(boolean collaborative) {
+        this.collaborative = collaborative;
     }
 
-    public String getDisplayName() {
-        return displayName;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public ExplicitContent getExplicitContent() {
-        return explicitContent;
-    }
-
-    public void setExplicitContent(ExplicitContent explicitContent) {
-        this.explicitContent = explicitContent;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public ExternalUrls getExternalUrls() {
@@ -98,12 +82,36 @@ public class  UserProfile {
         this.images = images;
     }
 
-    public String getProduct() {
-        return product;
+    public String getName() {
+        return name;
     }
 
-    public void setProduct(String product) {
-        this.product = product;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public boolean isPublicPlaylist() {
+        return publicPlaylist;
+    }
+
+    public void setPublicPlaylist(boolean publicPlaylist) {
+        this.publicPlaylist = publicPlaylist;
+    }
+
+    public String getSnapshotid() {
+        return snapshotid;
+    }
+
+    public void setSnapshotid(String snapshotid) {
+        this.snapshotid = snapshotid;
+    }
+
+    public Tracks getTracks() {
+        return tracks;
+    }
+
+    public void setTracks(Tracks tracks) {
+        this.tracks = tracks;
     }
 
     public String getType() {
