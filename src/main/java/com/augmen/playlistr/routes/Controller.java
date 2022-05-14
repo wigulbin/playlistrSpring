@@ -34,10 +34,7 @@ public class Controller {
 
     @GetMapping("/callback")
     public String callback(HttpServletRequest request) {
-        HttpSession session = request.getSession();
-
-        String code = request.getParameter("code");
-        session.setAttribute("code", code);
+        SpotifyClient.setupClient(request);
 
         return "home";
     }

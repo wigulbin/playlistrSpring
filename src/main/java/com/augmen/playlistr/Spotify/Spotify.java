@@ -1,6 +1,7 @@
 package com.augmen.playlistr.Spotify;
 
 
+import com.augmen.playlistr.Common;
 import org.springframework.boot.json.JsonParser;
 import org.springframework.boot.json.JsonParserFactory;
 
@@ -20,11 +21,9 @@ public class Spotify {
         {
             spotify = new Spotify();
             JsonParser parser = JsonParserFactory.getJsonParser();
-            String path = spotify.getClass().getClassLoader().getResource("keys.json").getPath();
-            if(path.startsWith("/"))
-                path = path.substring(1);
+            String path = Common.getResourcePath("keys.json");
 
-            Map<String, Object> keyMap = parser.parseMap(Files.readString(Path.of(path)));
+            Map<String, Object> keyMap = Common.parseJsonStringForMap(Files.readString(Path.of(path)));
             spotify.clientid = (String) keyMap.getOrDefault("clientid", "");
             spotify.clientSecret = (String) keyMap.getOrDefault("clientSecret", "");
 
@@ -40,5 +39,9 @@ public class Spotify {
     {
         if(spotify == null) Spotify.initialize();
         return spotify.clientid;
+    }
+    public static String getClientSecret() {
+        if(spotify == null) Spotify.initialize();
+        return spotify.clientSecret;
     }
 }
