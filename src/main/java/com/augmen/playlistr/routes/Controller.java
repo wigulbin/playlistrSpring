@@ -33,16 +33,24 @@ public class Controller {
     }
 
     @GetMapping("/callback")
-    public String callback(HttpServletRequest request) {
+    public RedirectView callback(HttpServletRequest request) {
         SpotifyClient.setupClient(request);
 
-        return "home";
+        return new RedirectView("/");
+    }
+
+    @GetMapping("/user")
+    public String getUserInfo(HttpServletRequest request){
+        SpotifyClient client = SpotifyClient.getClient(request);
+        client.getUserInfo();
+
+        return "";
     }
 
     @GetMapping("/playlist")
     public String getPlaylists(HttpServletRequest request){
-        HttpSession session = request.getSession();
-        String code = (String) session.getAttribute("code");
+        SpotifyClient client = SpotifyClient.getClient(request);
+        client.getPlaylists();
 
         return "";
     }

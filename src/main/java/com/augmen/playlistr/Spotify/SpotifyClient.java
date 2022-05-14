@@ -1,6 +1,7 @@
 package com.augmen.playlistr.Spotify;
 
 import com.augmen.playlistr.Common;
+import com.augmen.playlistr.Spotify.API.UserProfile;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.boot.json.JsonParser;
 import org.springframework.boot.json.JsonParserFactory;
@@ -26,7 +27,9 @@ public class SpotifyClient {
     private String state = "";
     private final String code;
     private String accessToken = "";
+    private static final String sessionKey = "client";
     private static final String REDIRECT_URI = "http://localhost:8081/callback";
+    private static final String SPOTIFY_API = "https://api.spotify.com/v1/";
     private static final String TOKEN_URI = "https://accounts.spotify.com/api/token";
 
 
@@ -52,7 +55,11 @@ public class SpotifyClient {
     public static void setupClient(HttpServletRequest request) {
         SpotifyClient client = new SpotifyClient(request);
         client.initializeAccessToken();
-        request.getSession().setAttribute("client", client);
+        request.getSession().setAttribute(sessionKey, client);
+    }
+
+    public static SpotifyClient getClient(HttpServletRequest request) {
+        return (SpotifyClient) request.getSession().getAttribute(sessionKey);
     }
 
     public SpotifyClient(HttpServletRequest request) {
@@ -70,15 +77,25 @@ public class SpotifyClient {
 
         Invocation.Builder invocationBuilder = target.request(MediaType.APPLICATION_JSON_TYPE);
         invocationBuilder.header("Authorization", "Basic " + Base64.encodeBase64URLSafeString((Spotify.getClientid() + ":" + Spotify.getClientSecret()).getBytes(StandardCharsets.UTF_8)));
-        Response response = invocationBuilder.post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE));
-        String accessTokenJson = response.readEntity(String.class);
+        String accessTokenJson;
+        try (Response response = invocationBuilder.post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE))) {
+            accessTokenJson = response.readEntity(String.class);
+        }
 
         Map<String, Object> keyMap = Common.parseJsonStringForMap(accessTokenJson);
 
         accessToken = (String) keyMap.getOrDefault("access_token", "");
     }
 
-    public void getPlaylists(){
+    public UserProfile getUserInfo() {
+        Client client = ClientBuilder.newClient();
+        WebTarget target = client.target(SPOTIFY_API + "me");
+        Invocation.Builder invocationBuilder = target.request(MediaType.APPLICATION_JSON_TYPE);
+        invocationBuilder.header("Authorization", "Bearer " + accessToken);
+        return invocationBuilder.get(UserProfile.class);
+    }
+
+    public void getPlaylists() {
         Client client = ClientBuilder.newClient();
 
     }
