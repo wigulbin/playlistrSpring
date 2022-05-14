@@ -1,10 +1,9 @@
 package com.augmen.playlistr.Spotify;
 
 import com.augmen.playlistr.Common;
+import com.augmen.playlistr.Spotify.API.Playlists;
 import com.augmen.playlistr.Spotify.API.UserProfile;
 import org.apache.tomcat.util.codec.binary.Base64;
-import org.springframework.boot.json.JsonParser;
-import org.springframework.boot.json.JsonParserFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.client.*;
@@ -13,8 +12,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -95,8 +92,12 @@ public class SpotifyClient {
         return invocationBuilder.get(UserProfile.class);
     }
 
-    public void getPlaylists() {
+    public Playlists getPlaylistsForUser() {
         Client client = ClientBuilder.newClient();
-
+        WebTarget target = client.target(SPOTIFY_API + "me/playlists");
+        Invocation.Builder invocationBuilder = target.request(MediaType.APPLICATION_JSON_TYPE);
+        invocationBuilder.header("Authorization", "Bearer " + accessToken);
+        System.out.println(invocationBuilder.get(String.class));
+        return invocationBuilder.get(Playlists.class);
     }
 }

@@ -15,6 +15,7 @@ public class Playlist {
     private String id = "";
     private List<Image> images;
     private String name = "";
+    private Owner owner;
     @JsonProperty("public")
     private boolean publicPlaylist;
     @JsonProperty("snapshot_id")
@@ -22,6 +23,8 @@ public class Playlist {
     private Tracks tracks;
     private String type = "";
     private String uri = "";
+    @JsonProperty("primary_color")
+    private String primaryColor = "";
 
     public Playlist() {
     }
@@ -128,5 +131,21 @@ public class Playlist {
 
     public void setUri(String uri) {
         this.uri = uri;
+    }
+
+    public Owner getOwner() {
+        return owner;
+    }
+
+    public void setOwner(Owner owner) {
+        this.owner = owner;
+    }
+
+    public String getPrimaryColor() {
+        return primaryColor;
+    }
+
+    public void setPrimaryColor(String primaryColor) {
+        this.primaryColor = primaryColor;
     }
 }
