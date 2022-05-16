@@ -8,9 +8,10 @@ public class Track {
     private Album album;
     private List<Artist> artists;
     @JsonProperty("available_markets")
-    private String availableMarkets = "";
+    private List<String> availableMarkets ;
     @JsonProperty("disc_number")
     private int discNumber;
+    @JsonProperty("duration_ms")
     private int durationMs;
     private boolean explicit;
     @JsonProperty("external_ids")
@@ -34,6 +35,9 @@ public class Track {
     private String uri = "";
     @JsonProperty("is_local")
     private boolean local;
+    @JsonProperty("added_at")
+    private String addedAt = "";
+    private Track track;
 
     public Track() {
     }
@@ -54,11 +58,11 @@ public class Track {
         this.artists = artists;
     }
 
-    public String getAvailableMarkets() {
+    public List<String> getAvailableMarkets() {
         return availableMarkets;
     }
 
-    public void setAvailableMarkets(String availableMarkets) {
+    public void setAvailableMarkets(List<String> availableMarkets) {
         this.availableMarkets = availableMarkets;
     }
 
@@ -196,5 +200,21 @@ public class Track {
 
     public void setLocal(boolean local) {
         this.local = local;
+    }
+
+    public String getAddedAt() {
+        return addedAt;
+    }
+
+    public void setAddedAt(String addedAt) {
+        this.addedAt = addedAt;
+    }
+
+    public Track getTrack() {
+        return track;
+    }
+
+    public void setTrack(Track track) {
+        this.track = track;
     }
 }

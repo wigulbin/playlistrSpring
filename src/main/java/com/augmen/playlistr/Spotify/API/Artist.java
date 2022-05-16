@@ -6,7 +6,7 @@ import java.util.List;
 
 public class Artist {
     @JsonProperty("external_urls")
-    private List<ExternalUrls> externalUrls;
+    private ExternalUrls externalUrls;
     private Followers followers;
     private List<String> genres;
     private String href = "";
@@ -20,11 +20,11 @@ public class Artist {
     public Artist() {
     }
 
-    public List<ExternalUrls> getExternalUrls() {
+    public ExternalUrls getExternalUrls() {
         return externalUrls;
     }
 
-    public void setExternalUrls(List<ExternalUrls> externalUrls) {
+    public void setExternalUrls(ExternalUrls externalUrls) {
         this.externalUrls = externalUrls;
     }
 

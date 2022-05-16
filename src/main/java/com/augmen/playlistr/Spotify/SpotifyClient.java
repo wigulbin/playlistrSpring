@@ -1,7 +1,9 @@
 package com.augmen.playlistr.Spotify;
 
 import com.augmen.playlistr.Common;
+import com.augmen.playlistr.Spotify.API.Playlist;
 import com.augmen.playlistr.Spotify.API.Playlists;
+import com.augmen.playlistr.Spotify.API.Tracks;
 import com.augmen.playlistr.Spotify.API.UserProfile;
 import org.apache.tomcat.util.codec.binary.Base64;
 
@@ -24,6 +26,10 @@ public class SpotifyClient {
     private String state = "";
     private final String code;
     private String accessToken = "";
+    private Playlists playlists;
+    private Tracks userTracks;
+
+
     private static final String sessionKey = "client";
     private static final String REDIRECT_URI = "http://localhost:8081/callback";
     private static final String SPOTIFY_API = "https://api.spotify.com/v1/";
@@ -85,19 +91,32 @@ public class SpotifyClient {
     }
 
     public UserProfile getUserInfo() {
-        Client client = ClientBuilder.newClient();
-        WebTarget target = client.target(SPOTIFY_API + "me");
-        Invocation.Builder invocationBuilder = target.request(MediaType.APPLICATION_JSON_TYPE);
-        invocationBuilder.header("Authorization", "Bearer " + accessToken);
+        Invocation.Builder invocationBuilder = getBuilderForCurrentUser("");
+
         return invocationBuilder.get(UserProfile.class);
     }
 
     public Playlists getPlaylistsForUser() {
+        Invocation.Builder invocationBuilder = getBuilderForCurrentUser("playlists");
+
+        playlists = invocationBuilder.get(Playlists.class);
+        return playlists;
+    }
+
+    public Tracks getTracksForCurrentUser() {
+        Invocation.Builder invocationBuilder = getBuilderForCurrentUser("tracks");
+
+        userTracks = invocationBuilder.get(Tracks.class);
+        return userTracks;
+    }
+
+    private Invocation.Builder getBuilderForCurrentUser(String endpoint) {
         Client client = ClientBuilder.newClient();
-        WebTarget target = client.target(SPOTIFY_API + "me/playlists");
+        WebTarget target = client.target(SPOTIFY_API + "me/" + endpoint);
         Invocation.Builder invocationBuilder = target.request(MediaType.APPLICATION_JSON_TYPE);
         invocationBuilder.header("Authorization", "Bearer " + accessToken);
-        System.out.println(invocationBuilder.get(String.class));
-        return invocationBuilder.get(Playlists.class);
+        return invocationBuilder;
     }
+
+
 }

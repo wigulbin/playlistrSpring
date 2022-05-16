@@ -1,6 +1,7 @@
 package com.augmen.playlistr.routes;
 
 import com.augmen.playlistr.Spotify.API.Playlists;
+import com.augmen.playlistr.Spotify.API.Tracks;
 import com.augmen.playlistr.Spotify.Spotify;
 import com.augmen.playlistr.Spotify.SpotifyClient;
 import org.springframework.beans.factory.annotation.Value;
@@ -49,6 +50,15 @@ public class Controller {
     public String getPlaylists(HttpServletRequest request){
         SpotifyClient client = SpotifyClient.getClient(request);
         Playlists playlists = client.getPlaylistsForUser();
+
+        return "home";
+    }
+
+    //Todo fix tracks so info is populated
+    @GetMapping("/tracks")
+    public String getTracks(HttpServletRequest request){
+        SpotifyClient client = SpotifyClient.getClient(request);
+        Tracks tracks = client.getTracksForCurrentUser();
 
         return "home";
     }
