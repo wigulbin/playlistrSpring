@@ -37,7 +37,6 @@ public class Track {
     private boolean local;
     @JsonProperty("added_at")
     private String addedAt = "";
-    private Track track;
 
     public Track() {
     }
@@ -208,13 +207,5 @@ public class Track {
 
     public void setAddedAt(String addedAt) {
         this.addedAt = addedAt;
-    }
-
-    public Track getTrack() {
-        return track;
-    }
-
-    public void setTrack(Track track) {
-        this.track = track;
     }
 }

@@ -4,7 +4,7 @@ import java.util.List;
 
 public class Tracks {
     private String href = "";
-    private List<Track> items;
+    private List<TrackWrapper> items;
     private int limit;
     private String next = "";
     private int offset;
@@ -22,11 +22,11 @@ public class Tracks {
         this.href = href;
     }
 
-    public List<Track> getItems() {
+    public List<TrackWrapper> getItems() {
         return items;
     }
 
-    public void setItems(List<Track> items) {
+    public void setItems(List<TrackWrapper> items) {
         this.items = items;
     }
 

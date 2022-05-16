@@ -7,11 +7,14 @@ import com.augmen.playlistr.Spotify.SpotifyClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 
+@SessionAttributes("client")
 @org.springframework.stereotype.Controller
 public class Controller {
     @Value("${spring.application.name}")
@@ -32,8 +35,9 @@ public class Controller {
     }
 
     @GetMapping("/callback")
-    public RedirectView callback(HttpServletRequest request) {
-        SpotifyClient.setupClient(request);
+    public RedirectView callback(@RequestParam String code, Model model) {
+        SpotifyClient client = SpotifyClient.setupClient(code);
+        model.addAttribute("client", client);
 
         return new RedirectView("/");
     }
@@ -47,8 +51,8 @@ public class Controller {
     }
 
     @GetMapping("/playlist")
-    public String getPlaylists(HttpServletRequest request){
-        SpotifyClient client = SpotifyClient.getClient(request);
+    public String getPlaylists(Model model){
+        SpotifyClient client = (SpotifyClient) model.getAttribute("client");
         Playlists playlists = client.getPlaylistsForUser();
 
         return "home";
@@ -56,8 +60,8 @@ public class Controller {
 
     //Todo fix tracks so info is populated
     @GetMapping("/tracks")
-    public String getTracks(HttpServletRequest request){
-        SpotifyClient client = SpotifyClient.getClient(request);
+    public String getTracks(Model model){
+        SpotifyClient client = (SpotifyClient) model.getAttribute("client");
         Tracks tracks = client.getTracksForCurrentUser();
 
         return "home";

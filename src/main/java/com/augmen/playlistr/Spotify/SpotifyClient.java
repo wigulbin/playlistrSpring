@@ -55,18 +55,18 @@ public class SpotifyClient {
         return authUrl + String.join("&", params);
     }
 
-    public static void setupClient(HttpServletRequest request) {
-        SpotifyClient client = new SpotifyClient(request);
+    public static SpotifyClient setupClient(String code) {
+        SpotifyClient client = new SpotifyClient(code);
         client.initializeAccessToken();
-        request.getSession().setAttribute(sessionKey, client);
+        return client;
     }
 
     public static SpotifyClient getClient(HttpServletRequest request) {
         return (SpotifyClient) request.getSession().getAttribute(sessionKey);
     }
 
-    public SpotifyClient(HttpServletRequest request) {
-        code = request.getParameter("code");
+    public SpotifyClient(String code) {
+        this.code = code;
     }
 
     public void initializeAccessToken() {
@@ -110,6 +110,10 @@ public class SpotifyClient {
         return userTracks;
     }
 
+    public void getAllTracksForCurrentUser() {
+        Invocation.Builder invocationBuilder = getBuilderForCurrentUser("tracks", 50);
+    }
+
     private Invocation.Builder getBuilderForCurrentUser(String endpoint) {
         Client client = ClientBuilder.newClient();
         WebTarget target = client.target(SPOTIFY_API + "me/" + endpoint);
@@ -118,5 +122,13 @@ public class SpotifyClient {
         return invocationBuilder;
     }
 
+    private Invocation.Builder getBuilderForCurrentUser(String endpoint, int limit) {
+        Client client = ClientBuilder.newClient();
+        WebTarget target = client.target(SPOTIFY_API + "me/" + endpoint);
+        Invocation.Builder invocationBuilder = target.request(MediaType.APPLICATION_JSON_TYPE);
+        invocationBuilder.header("Authorization", "Bearer " + accessToken);
+        invocationBuilder.property("limit", limit);
+        return invocationBuilder;
+    }
 
 }
