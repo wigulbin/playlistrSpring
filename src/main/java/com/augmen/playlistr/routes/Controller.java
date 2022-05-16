@@ -1,6 +1,7 @@
 package com.augmen.playlistr.routes;
 
 import com.augmen.playlistr.Spotify.API.Playlists;
+import com.augmen.playlistr.Spotify.API.Track;
 import com.augmen.playlistr.Spotify.API.Tracks;
 import com.augmen.playlistr.Spotify.Spotify;
 import com.augmen.playlistr.Spotify.SpotifyClient;
@@ -13,6 +14,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @SessionAttributes("client")
 @org.springframework.stereotype.Controller
@@ -62,7 +64,7 @@ public class Controller {
     @GetMapping("/tracks")
     public String getTracks(Model model){
         SpotifyClient client = (SpotifyClient) model.getAttribute("client");
-        Tracks tracks = client.getTracksForCurrentUser();
+        List<Track> tracks = client.getTrackListForCurrentUser();
 
         return "home";
     }

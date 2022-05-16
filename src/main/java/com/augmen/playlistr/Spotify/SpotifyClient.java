@@ -1,10 +1,7 @@
 package com.augmen.playlistr.Spotify;
 
 import com.augmen.playlistr.Common;
-import com.augmen.playlistr.Spotify.API.Playlist;
-import com.augmen.playlistr.Spotify.API.Playlists;
-import com.augmen.playlistr.Spotify.API.Tracks;
-import com.augmen.playlistr.Spotify.API.UserProfile;
+import com.augmen.playlistr.Spotify.API.*;
 import org.apache.tomcat.util.codec.binary.Base64;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,9 +11,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class SpotifyClient {
 
@@ -97,26 +93,45 @@ public class SpotifyClient {
     }
 
     public Playlists getPlaylistsForUser() {
-        Invocation.Builder invocationBuilder = getBuilderForCurrentUser("playlists");
+        Invocation.Builder invocationBuilder = getBuilderForCurrentUser(SPOTIFY_API + "me/playlists");
 
         playlists = invocationBuilder.get(Playlists.class);
         return playlists;
     }
 
     public Tracks getTracksForCurrentUser() {
-        Invocation.Builder invocationBuilder = getBuilderForCurrentUser("tracks");
+        Invocation.Builder invocationBuilder = getBuilderForCurrentUser(SPOTIFY_API + "me/tracks");
 
         userTracks = invocationBuilder.get(Tracks.class);
         return userTracks;
     }
 
-    public void getAllTracksForCurrentUser() {
-        Invocation.Builder invocationBuilder = getBuilderForCurrentUser("tracks", 50);
+    public List<Tracks> getAllTracksForCurrentUser() {
+        List<Tracks> tracks = new ArrayList<>();
+        Queue<String> urlQueue = new PriorityQueue<>();
+        urlQueue.add(SPOTIFY_API + "me/tracks");
+        Tracks userTracks = null;
+        do {
+            Invocation.Builder invocationBuilder = getBuilderForCurrentUser(urlQueue.remove(), 50);
+            userTracks = invocationBuilder.get(Tracks.class);
+            if(userTracks != null)
+            {
+                tracks.add(userTracks);
+                if(userTracks.getNext() != null)
+                    urlQueue.add(userTracks.getNext());
+            }
+        }  while (userTracks != null && urlQueue.size() > 0);
+
+        return tracks;
+    }
+
+    public List<Track> getTrackListForCurrentUser() {
+        return getAllTracksForCurrentUser().stream().map(Tracks::getItems).flatMap(List::stream).map(TrackWrapper::getTrack).collect(Collectors.toList());
     }
 
     private Invocation.Builder getBuilderForCurrentUser(String endpoint) {
         Client client = ClientBuilder.newClient();
-        WebTarget target = client.target(SPOTIFY_API + "me/" + endpoint);
+        WebTarget target = client.target(endpoint);
         Invocation.Builder invocationBuilder = target.request(MediaType.APPLICATION_JSON_TYPE);
         invocationBuilder.header("Authorization", "Bearer " + accessToken);
         return invocationBuilder;
@@ -124,10 +139,9 @@ public class SpotifyClient {
 
     private Invocation.Builder getBuilderForCurrentUser(String endpoint, int limit) {
         Client client = ClientBuilder.newClient();
-        WebTarget target = client.target(SPOTIFY_API + "me/" + endpoint);
-        Invocation.Builder invocationBuilder = target.request(MediaType.APPLICATION_JSON_TYPE);
+        WebTarget target = client.target(endpoint);
+        Invocation.Builder invocationBuilder = target.queryParam("limit", limit).request(MediaType.APPLICATION_JSON_TYPE);
         invocationBuilder.header("Authorization", "Bearer " + accessToken);
-        invocationBuilder.property("limit", limit);
         return invocationBuilder;
     }
 
