@@ -6,6 +6,8 @@ import com.augmen.playlistr.Spotify.API.Track;
 import com.augmen.playlistr.Spotify.API.Tracks;
 import com.augmen.playlistr.Spotify.Spotify;
 import com.augmen.playlistr.Spotify.SpotifyClient;
+import com.augmen.playlistr.Spotify.Tagger;
+import com.augmen.playlistr.Spotify.TrackInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.ui.Model;
@@ -20,6 +22,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -67,12 +70,24 @@ public class Controller {
         return new ModelAndView("redirect:/", model);
     }
 
-    //Todo fix tracks so info is populated
     @GetMapping("/tracks")
     public ModelAndView getTracks(ModelMap model){
         SpotifyClient client = (SpotifyClient) model.getAttribute("client");
         List<Track> tracks = client.getTrackListForCurrentUser();
         Map<String, AudioFeature> featuresByTrackid = client.analyzeTracks(tracks);
+
+        List<TrackInfo> trackInfoList = new ArrayList<>();
+        for (Track track : tracks) {
+            TrackInfo info = new TrackInfo();
+            info.setTrack(track);
+            info.setAudioFeature(featuresByTrackid.get(track.getId()));
+
+            trackInfoList.add(info);
+        }
+
+        Tagger.autoTagSongs(trackInfoList);
+
+        model.addAttribute("trackInfoList", trackInfoList);
         model.addAttribute("tracks", tracks);
         model.addAttribute("featuresByTrackid", featuresByTrackid);
 
