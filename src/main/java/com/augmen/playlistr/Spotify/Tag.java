@@ -14,7 +14,7 @@ public class Tag {
     public Tag(String name) {
         this.id = new Random().nextLong();
         this.name = name;
-        this.color = Integer.toHexString(new Random().nextInt(16777215));
+        this.color = Integer.toHexString(new Random().nextInt(0x444444, 0xFFFFFF));
     }
 
     public void addTag(Tag tag){

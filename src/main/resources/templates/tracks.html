@@ -15,7 +15,7 @@
                     <div th:text="${trackInfo.track.name}"></div>
                     <div>
                         <div style="display:inline-block" th:each="tag, tagStat: ${trackInfo.tags}">
-                            <div th:style="'height:5px;width:10px;border: 3px solid #' + ${tag.color} + ';background-color:#' + ${tag.color}">
+                            <div th:style="'height:5px;width:10px;border: 3px solid #' + ${tag.color} + ';background-color:#' + ${tag.color}" th:title="${tag.name}">
 
                             </div>
                         </div>
