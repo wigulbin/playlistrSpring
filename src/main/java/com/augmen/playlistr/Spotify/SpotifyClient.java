@@ -87,7 +87,7 @@ public class SpotifyClient {
     }
 
     public UserProfile getUserInfo() {
-        Invocation.Builder invocationBuilder = getBuilderForCurrentUser("");
+        Invocation.Builder invocationBuilder = getBuilderForCurrentUser(SPOTIFY_API + "me");
 
         return invocationBuilder.get(UserProfile.class);
     }

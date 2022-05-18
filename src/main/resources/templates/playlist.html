@@ -1,17 +1,250 @@
-<html>
-<head><title>Home Page</title></head>
-<body>
-<h1>Hello !</h1>
-<p>Welcome to <!--/*@thymesVar id="appName" type="java.lang.String"*/-->
-    <span th:text="${appName}">Our App</span></p>
-<span th:text="${code}">Code</span></p>
-</body>
+<html xmlns:th="https://www.thymeleaf.org" lang="en" style="margin: 0;height: 100%;">
+<head>
+    <meta charSet="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Advent+Pro&amp;family=Nunito&amp;family=Roboto&amp;display=swap"
+          rel="stylesheet">
+
+    <style>
+        :root {
+            --font-color: #adadad;
+            /* --font-color: #ebe9e9; */
+        }
+
+        .container {
+            display: grid;
+            height: 100%;
+            color: var(--font-color);
+            font-family: Roboto;
+            grid-template-rows: 9% 1fr;
+            grid-template-columns: 12% 1fr;
+            grid-template-areas:
+            "topBar topBar"
+            "leftBar mainBody";
+        }
+
+        .alignItemsCenter {
+            display: flex;
+            align-items: center;
+        }
+
+        .flexApart {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .listItem {
+            margin: 20px 0 7px 0;
+            cursor: pointer;
+        }
+
+        #topBar {
+            background-color: #0F0F0F;
+            grid-area: topBar;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 15px;
+        }
+
+        #leftBar {
+            grid-area: leftBar;
+            background-color: #2b2b2b;
+            padding: 0 15px;
+            padding-top: 10px;
+        }
+
+        #leftBar2 {
+            grid-area: leftBar2;
+            background-color: #16161d;
+            padding: 0 15px;
+        }
+
+        #mainBody {
+            grid-area: mainBody;
+            background-color: #191919;
+        }
+
+        #search {
+            border: none;
+            height: 40px;
+            width: 90%;
+            background-color: inherit;
+            color: inherit;
+            font-size: large;
+        }
+
+        #search:focus {
+            border: none;
+            outline: none;
+        }
+
+        #search:focus-visible {
+            border: none;
+            outline: none;
+        }
+
+        .icon {
+            height: 25px;
+            filter: invert(0.6);
+            margin-left: 5px;
+        }
+
+        .listContent div {
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        h1{
+            font-family: Advent Pro;
+            font-size: 40px;
+            margin:0;
+        }
+
+        h2{
+            /* font-family: Advent Pro; */
+            font-size: 25px;
+            margin:0;
+            font-weight: 500;
+        }
+
+        h3{
+            /* font-family: Advent Pro; */
+            font-size: 18px;
+            margin:0;
+            font-weight: 300;
+        }
+
+        h4{
+            /* font-family: Advent Pro; */
+            font-size: 14px;
+            margin:0;
+            font-weight: 300;
+        }
+
+        h5{
+            /* font-family: Advent Pro; */
+            font-size: 10px;
+            margin:0;
+            font-weight: 300;
+        }
+
+        .profileImage {
+            border-radius: 15px;
+        }
+
+        .none {
+            display: none;
+        }
+    </style>
+</head>
+
+
+<body onLoad="init()" style="margin: 0;height: 100%;">
+<div class="container">
+    <div id="topBar" style="border-bottom: 1px solid #FF0035;">
+        <div><h1 style="letter-spacing: 5px;">Playlist<span style="color: #FF0035;">r</span></h1></div>
+        <div style="font-size: 25px; " class="alignItemsCenter" th:if="${profile != null}">
+            <div style="margin-right:15px;font-family: Advent Pro;">
+                <h3 th:text="${profile.displayName}"></h3>
+            </div>
+            <img class="profileImage"
+                 th:src="${profile.images[0].url}"
+                 alt="" style="height: 45px;">
+        </div>
+        <div th:if="${profile == null}">
+            <a href="/authorize">Authorize Account</a>
+        </div>
+    </div>
+    <div id="leftBar">
+        <h2>Library</h2>
+        <div>
+            <div class="listPart">
+                <div class="alignItemsCenter flexApart listItem">
+                    <h3>All Songs</h3>
+                    <img class="icon"
+                         src="images/caret-down.svg" alt="">
+                </div>
+            </div>
+
+            <div class="listPart">
+                <div class="alignItemsCenter flexApart listItem">
+                    <h3>Liked Songs</h3>
+                    <img class="icon"
+                         src="images/caret-down.svg" alt="">
+                </div>
+            </div>
+
+            <div class="listPart">
+                <div class="alignItemsCenter flexApart listItem">
+                    <h3>Managed Playlists</h3>
+                    <img class="icon"
+                         src="images/caret-down.svg" alt="">
+                </div>
+                <div class="listContent none">
+                    <div><h4>Certified Bops</h4></div>
+                    <div><h4>adtr</h4></div>
+                </div>
+            </div>
+
+            <div class="listPart">
+                <div class="listItem alignItemsCenter flexApart">
+                    <h3>Your Playlists</h3>
+                    <img class="icon"
+                         src="images/caret-down.svg" alt="">
+                </div>
+
+                <div class="listContent none">
+                    <div><h4>S tier</h4></div>
+                    <div><h4>Bop Punk</h4></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="mainBody" style="text-align: center;">
+        <div style="display: flex; align-items: center;width:40%;margin:8% auto;position: relative;">
+            <div style="display: flex; align-items: center;border: 3px solid var(--font-color);border-radius: 25px;height: 40px;width: 100%;background-color: inherit;color: inherit;font-size:large;padding-left: 15px;">
+                <input autoComplete="off" id="search" type="text">
+                <img class="icon" src="images/search.svg"
+                     alt="">
+            </div>
+        </div>
+        <div id="tracks">
+
+        </div>
+    </div>
+</div>
+<div th:if="${fetchPlaylists != null}">
+    <script>fetchPlaylists()</script>
+</div>
 
 <script>
-    function loadPlaylists() {
-        fetch('http://localhost:8081/playlists')
+    function init() {
+        addEventListeners()
+    }
+
+    function addEventListeners() {
+        [...document.getElementsByClassName("listPart")].forEach(element => element.addEventListener('click', () => listItemListener(element)));
+    }
+
+    function listItemListener(element) {
+        const listContent = element.querySelector("div.listcontent");
+
+        if (listContent.classList.contains('none'))
+            listContent.classList.remove('none');
+        else
+            listContent.classList.add('none');
+    }
+
+    function fetchPlaylists() {
+        fetch("/tracks")
             .then(res => res.text())
-            .then(res => console.log(res));
+            .then(htmlText => document.getElementById("tracks").innerHTML = htmlText);
     }
 </script>
+</body>
 </html>

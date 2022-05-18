@@ -1,0 +1,44 @@
+<html xmlns:th="https://www.thymeleaf.org" lang="en">
+<head>
+    <style>
+        table{
+            color:#adadad;
+        }
+        tr td{
+            padding: 10px 5px;
+        }
+
+        tr{
+        }
+
+        tr.heading{
+            font-size: 18px;
+            font-weight: 700;
+        }
+        tr.rowContent{
+            font-size: 14px;
+            font-weight: 400;
+        }
+
+        tr.rowContent:nth-child(odd) {
+            background-color: #202020;
+        }
+    </style>
+</head>
+    <table>
+        <tr class="heading">
+            <td></td>
+            <td>Title</td>
+            <td>Artist</td>
+            <td>Album</td>
+        </tr>
+        <tbody th:if="${tracks != null}"><!--/*@thymesVar id="tracks" type="java.util.List<com.augmen.playlistr.Spotify.API.Track>"*/-->
+            <tr th:each="track, iStat : ${tracks}" class="rowContent">
+                <td th:text="${iStat.count}">#</td>
+                <td th:text="${track.name}"></td>
+                <td th:text="${track.getArtists().get(0).name}"></td>
+                <td th:text="${track.album.name}"></td>
+            </tr>
+        </tbody>
+    </table>
+</html>
