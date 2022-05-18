@@ -1,5 +1,6 @@
 package com.augmen.playlistr.routes;
 
+import com.augmen.playlistr.Spotify.API.AudioFeature;
 import com.augmen.playlistr.Spotify.API.Playlists;
 import com.augmen.playlistr.Spotify.API.Track;
 import com.augmen.playlistr.Spotify.API.Tracks;
@@ -20,6 +21,7 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
 
 @SessionAttributes({"client", "profile"})
 @org.springframework.stereotype.Controller
@@ -53,7 +55,6 @@ public class Controller {
     public ModelAndView getUserInfo(HttpServletRequest request, ModelMap model){
         SpotifyClient client = (SpotifyClient) model.getAttribute("client");
         model.addAttribute("profile", client.getUserInfo());
-        model.addAttribute("fetchPlaylists", true);
 
         return new ModelAndView ("redirect:/", model);
     }
@@ -71,7 +72,9 @@ public class Controller {
     public ModelAndView getTracks(ModelMap model){
         SpotifyClient client = (SpotifyClient) model.getAttribute("client");
         List<Track> tracks = client.getTrackListForCurrentUser();
+        Map<String, AudioFeature> featuresByTrackid = client.analyzeTracks(tracks);
         model.addAttribute("tracks", tracks);
+        model.addAttribute("featuresByTrackid", featuresByTrackid);
 
         return new ModelAndView("tracks", model);
     }

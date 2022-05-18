@@ -15,11 +15,13 @@
             /* --font-color: #ebe9e9; */
         }
 
+        .containerBody{
+            color: var(--font-color);
+            font-family: Roboto;
+        }
         .container {
             display: grid;
             height: 100%;
-            color: var(--font-color);
-            font-family: Roboto;
             grid-template-rows: 9% 1fr;
             grid-template-columns: 12% 1fr;
             grid-template-areas:
@@ -114,7 +116,7 @@
 
         h3{
             /* font-family: Advent Pro; */
-            font-size: 18px;
+            font-size: 16px;
             margin:0;
             font-weight: 300;
         }
@@ -140,12 +142,92 @@
         .none {
             display: none;
         }
+
+        table{
+            color:#adadad;
+            width:80%;
+            margin: 0 auto;
+        }
+        tr td{
+            padding: 10px 5px;
+        }
+
+        tr{
+        }
+
+        tr.heading{
+            font-size: 18px;
+            font-weight: 700;
+        }
+        tr.rowContent{
+            font-size: 14px;
+            font-weight: 400;
+        }
+
+        tr.rowContent:nth-child(odd) {
+            background-color: #202020;
+        }
+
+        #popup{
+            background-color: black;
+            position: absolute;
+            top: 25%;
+            left: 40%;
+            width: 500px;
+            border:2px solid #2b2b2b;
+            padding: 2px 10px 10px 10px;
+        }
+        #popupTitle{
+            padding:15px;
+        }
+
+        .unfocused{
+            filter: brightness(0.5);
+        }
     </style>
 </head>
 
 
-<body onLoad="init()" style="margin: 0;height: 100%;">
-<div class="container">
+<script>
+    function init() {
+        addEventListeners()
+    }
+
+    function addEventListeners() {
+        [...document.getElementsByClassName("listPart")].forEach(element => element.addEventListener('click', () => listItemListener(element)));
+    }
+
+    function listItemListener(element) {
+        const listContent = element.querySelector("div.listcontent");
+
+        if (listContent.classList.contains('none'))
+            listContent.classList.remove('none');
+        else
+            listContent.classList.add('none');
+    }
+
+    function fetchPlaylists() {
+        console.log('fetching tracks...')
+        fetch("/tracks")
+            .then(res => res.text())
+            .then(htmlText => document.getElementById("tracks").innerHTML = htmlText);
+    }
+
+    function showTrackInfo(title, trackid) {
+        document.getElementById("popup").style.display = '';
+        document.getElementById("mainContent").classList.add('unfocused')
+        document.getElementById("popupTitle").innerText = title;
+        document.getElementById("popupBody").innerHTML = document.getElementById(trackid).innerHTML;
+    }
+
+    function closePopup(){
+        document.getElementById("popup").style.display = 'none';
+        document.getElementById("mainContent").classList.remove('unfocused')
+    }
+</script>
+
+<body class="containerBody" onLoad="init()" style="margin: 0;height: 100%;">
+<div id="mainContent" class="container">
     <div id="topBar" style="border-bottom: 1px solid #FF0035;">
         <div><h1 style="letter-spacing: 5px;">Playlist<span style="color: #FF0035;">r</span></h1></div>
         <div style="font-size: 25px; " class="alignItemsCenter" th:if="${profile != null}">
@@ -214,37 +296,24 @@
             </div>
         </div>
         <div id="tracks">
+            <div th:replace="${tracks != null} ? ~{tracks.html :: trackTable} : ~{empty.html :: emptyFrag}">
 
+            </div>
+            <div th:if="${tracks == null && profile != null}">
+                <script>fetchPlaylists()</script>
+            </div>
         </div>
     </div>
 </div>
-<div th:if="${fetchPlaylists != null}">
-    <script>fetchPlaylists()</script>
+
+<div id="popup" style="display: none">
+    <div style="border-bottom: 1px solid;" class="flexApart alignItemsCenter">
+        <h2 id="popupTitle"></h2>
+        <img src="images/times-circle.svg" class="icon" alt="" onclick="closePopup()">
+    </div>
+    <div id="popupBody">
+
+    </div>
 </div>
-
-<script>
-    function init() {
-        addEventListeners()
-    }
-
-    function addEventListeners() {
-        [...document.getElementsByClassName("listPart")].forEach(element => element.addEventListener('click', () => listItemListener(element)));
-    }
-
-    function listItemListener(element) {
-        const listContent = element.querySelector("div.listcontent");
-
-        if (listContent.classList.contains('none'))
-            listContent.classList.remove('none');
-        else
-            listContent.classList.add('none');
-    }
-
-    function fetchPlaylists() {
-        fetch("/tracks")
-            .then(res => res.text())
-            .then(htmlText => document.getElementById("tracks").innerHTML = htmlText);
-    }
-</script>
 </body>
 </html>

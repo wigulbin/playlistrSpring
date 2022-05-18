@@ -1,43 +1,86 @@
 <html xmlns:th="https://www.thymeleaf.org" lang="en">
-<head>
-    <style>
-        table{
-            color:#adadad;
-        }
-        tr td{
-            padding: 10px 5px;
-        }
-
-        tr{
-        }
-
-        tr.heading{
-            font-size: 18px;
-            font-weight: 700;
-        }
-        tr.rowContent{
-            font-size: 14px;
-            font-weight: 400;
-        }
-
-        tr.rowContent:nth-child(odd) {
-            background-color: #202020;
-        }
-    </style>
-</head>
-    <table>
+    <table th:fragment="trackTable">
         <tr class="heading">
             <td></td>
             <td>Title</td>
             <td>Artist</td>
             <td>Album</td>
+            <td></td>
         </tr>
         <tbody th:if="${tracks != null}"><!--/*@thymesVar id="tracks" type="java.util.List<com.augmen.playlistr.Spotify.API.Track>"*/-->
             <tr th:each="track, iStat : ${tracks}" class="rowContent">
                 <td th:text="${iStat.count}">#</td>
                 <td th:text="${track.name}"></td>
                 <td th:text="${track.getArtists().get(0).name}"></td>
-                <td th:text="${track.album.name}"></td>
+                <td th:text="${track.album.name}"></td><!--/*@thymesVar id="featuresByTrackid" type="java.util.Map<java.lang.String, com.augmen.playlistr.Spotify.API.AudioFeature>"*/-->
+                <td style="text-align: center">
+                    <div th:if="${featuresByTrackid.get(track.id) != null}">
+                        <img src="images/info-circle.svg" class="icon" th:attr="onclick=|showTrackInfo('${track.name} Features', '${track.id}')|"/>
+                        <div th:id="${track.id}" style="display: none;position:absolute;top:40%;left:40%">
+                            <table>
+                                <tr class="heading">
+                                    <td>Feature</td>
+                                    <td>Value</td>
+                                </tr>
+                                <tbody>
+                                <tr class="rowContent">
+                                    <td>Acousticness</td>
+<!--                                    <td th:text="${#numbers.formatDecimal(featuresByTrackid.get(track.id).acousticness, 1,5, 'POINT')}"></td>-->
+                                    <td th:text="${#numbers.formatPercent(featuresByTrackid.get(track.id).acousticness, 1,2)}"></td>
+                                </tr>
+                                <tr class="rowContent">
+                                    <td>Danceability</td>
+                                    <td th:text="${#numbers.formatPercent(featuresByTrackid.get(track.id).danceability, 1, 2)}"></td>
+                                </tr>
+                                <tr class="rowContent">
+                                    <td>Duration (Ms)</td>
+                                    <td th:text="${featuresByTrackid.get(track.id).durationMs}"></td>
+                                </tr>
+                                <tr class="rowContent">
+                                    <td>Energy</td>
+                                    <td th:text="${#numbers.formatPercent(featuresByTrackid.get(track.id).energy, 1 , 2)}"></td>
+                                </tr>
+                                <tr class="rowContent">
+                                    <td>Instrumentalness</td>
+                                    <td th:text="${#numbers.formatPercent(featuresByTrackid.get(track.id).instrumentalness, 1, 2)}"></td>
+                                </tr>
+                                <tr class="rowContent">
+                                    <td>Key</td>
+                                    <td th:text="${featuresByTrackid.get(track.id).keyName}"></td>
+                                </tr>
+                                <tr class="rowContent">
+                                    <td>Liveness</td>
+                                    <td th:text="${#numbers.formatPercent(featuresByTrackid.get(track.id).liveness, 1, 2)}"></td>
+                                </tr>
+                                <tr class="rowContent">
+                                    <td>Loudness</td>
+                                    <td th:text="${#numbers.formatDecimal(featuresByTrackid.get(track.id).loudness, 1, 2)}"></td>
+                                </tr>
+                                <tr class="rowContent">
+                                    <td>Mode</td>
+                                    <td th:text="${featuresByTrackid.get(track.id).modeName}"></td>
+                                </tr>
+                                <tr class="rowContent">
+                                    <td>Speechiness</td>
+                                    <td th:text="${#numbers.formatPercent(featuresByTrackid.get(track.id).speechiness, 1, 2)}"></td>
+                                </tr>
+                                <tr class="rowContent">
+                                    <td>Tempo</td>
+                                    <td th:text="${#numbers.formatDecimal(featuresByTrackid.get(track.id).tempo, 1, 2)}"></td>
+                                </tr>
+                                <tr class="rowContent">
+                                    <td>Time Signature</td>
+                                    <td th:text="${featuresByTrackid.get(track.id).timeSignature}"></td>
+                                </tr>
+                                <tr class="rowContent">
+                                    <td>Valence</td>
+                                    <td th:text="${#numbers.formatPercent(featuresByTrackid.get(track.id).valence, 1 , 2)}"></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </td>
             </tr>
         </tbody>
     </table>
