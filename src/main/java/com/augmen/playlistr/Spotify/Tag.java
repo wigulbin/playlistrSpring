@@ -7,12 +7,14 @@ import java.util.*;
 public class Tag {
     private long id;
     private String name = "";
+    private String color = "";
     List<Attribute> attributes = new ArrayList<>();
     List<Tag> tags = new ArrayList<>();
 
     public Tag(String name) {
         this.id = new Random().nextLong();
         this.name = name;
+        this.color = Integer.toHexString(new Random().nextInt(16777215));
     }
 
     public void addTag(Tag tag){
@@ -74,5 +76,13 @@ public class Tag {
 
     public void setTags(List<Tag> tags) {
         this.tags = tags;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
     }
 }

@@ -11,7 +11,16 @@
         <tbody th:if="${tracks != null}"><!--/*@thymesVar id="trackInfoList" type="java.util.List<com.augmen.playlistr.Spotify.TrackInfo>"*/-->
             <tr th:each="trackInfo, iStat : ${trackInfoList}" class="rowContent">
                 <td th:text="${iStat.count}">#</td>
-                <td th:text="${trackInfo.track.name}"></td>
+                <td>
+                    <div th:text="${trackInfo.track.name}"></div>
+                    <div>
+                        <div style="display:inline-block" th:each="tag, tagStat: ${trackInfo.tags}">
+                            <div th:style="'height:5px;width:10px;border: 3px solid #' + ${tag.color} + ';background-color:#' + ${tag.color}">
+
+                            </div>
+                        </div>
+                    </div>
+                </td>
                 <td th:text="${trackInfo.track.getArtists().get(0).name}"></td>
                 <td th:text="${trackInfo.track.album.name}"></td><!--/*@thymesVar id="featuresByTrackid" type="java.util.Map<java.lang.String, com.augmen.playlistr.Spotify.API.AudioFeature>"*/-->
                 <td style="text-align: center">
@@ -93,7 +102,7 @@
                                 </tr>
                                 <tbody>
                                 <tr th:each="tag, tStat: ${trackInfo.tags}" class="rowContent">
-                                    <td th:text="${tag.name}"></td>
+                                    <td th:text="${tag.name}" th:style="'border: 3px solid #' + ${tag.color}"></td>
                                 </tr>
                                 </tbody>
                             </table>
