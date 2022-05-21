@@ -1,6 +1,7 @@
-package com.augmen.playlistr.Spotify;
+package com.augmen.playlistr.Spotify.Attributes;
 
 import com.augmen.playlistr.Spotify.API.AudioFeature;
+import com.augmen.playlistr.Spotify.TrackInfo;
 
 public class Attribute {
     String name = "";

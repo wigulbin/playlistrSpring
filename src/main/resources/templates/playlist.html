@@ -162,16 +162,21 @@
         tr.rowContent{
             font-size: 14px;
             font-weight: 400;
+            cursor:pointer;
         }
 
         tr.rowContent:nth-child(odd) {
             background-color: #202020;
         }
 
+        tr.rowContent:hover{
+            background-color: #282828;
+        }
+
         #popup{
             background-color: black;
             position: fixed;
-            top: 25%;
+            top: 100px;
             left: 40%;
             width: 500px;
             border:2px solid #2b2b2b;
@@ -184,17 +189,66 @@
         .unfocused{
             filter: brightness(0.5);
         }
+
+        .displayTag{
+            display: inline-block;
+            height:5px;
+            width:10px;
+        }
+
+        #tagDisplay{
+            margin-top:15px;
+            display: flex;
+            width:100%;
+        }
+
+        .displayTag.big{
+            height: 10px;
+            width: 20px;
+            margin-right: 10px;
+        }
+
+        .selectable{
+            cursor:pointer;
+        }
     </style>
 </head>
 
 
 <script>
+
+    let json = '';
+    let tagRows = [];
+    let tagSearch;
+    let searchBar;
+    let tagDisplay;
+    let topBar;
+    let leftBar;
+    let mainBody;
+    let selectedTags = [];
+
+    let inputFocused = false;
     function init() {
-        addEventListeners()
+        tagRows = [... document.getElementsByClassName("tagRow")];
+        tagSearch = document.getElementById("tagSearch");
+        searchBar = document.getElementById("search");
+        tagDisplay = document.getElementById("tagDisplay");
+        topBar = document.getElementById("topBar");
+        leftBar = document.getElementById("leftBar");
+        mainBody = document.getElementById("mainBody");
+        json = [... JSON.parse(searchBar.dataset.model)];
+
+        addEventListeners();
     }
 
     function addEventListeners() {
         [...document.getElementsByClassName("listPart")].forEach(element => element.addEventListener('click', () => listItemListener(element)));
+        [...document.getElementsByClassName("rowContent")].forEach(element => element.addEventListener('click', () => handleRowClick(element)));
+        searchBar.addEventListener('keyup', () => handleSearchBar());
+        searchBar.addEventListener('focus', () => focusSearchBar());
+        topBar.addEventListener('click', (e) => blurSearchBar(e));
+        leftBar.addEventListener('click', (e) => blurSearchBar(e));
+        mainBody.addEventListener('click', (e) => blurSearchBar(e));
     }
 
     function listItemListener(element) {
@@ -205,6 +259,73 @@
         else
             listContent.classList.add('none');
     }
+    function focusSearchBar() {
+        inputFocused = true;
+        tagSearch.style.display = '';
+    }
+    function blurSearchBar(e) {
+        if(document.activeElement !== searchBar)
+            tagSearch.style.display = 'none';
+    }
+    function handleSearchBar() {
+        const value = searchBar.value
+
+        let results = json.filter(obj => obj.name.indexOf(value) !== -1)
+            .map(obj => obj.id);
+
+        tagRows.forEach(row => {
+            let id = row.dataset.id;
+            if(results.indexOf(Number.parseInt(id)) != -1)
+                row.style.display = '';
+            else
+                row.style.display = 'none';
+        });
+    }
+
+    function handleRowClick(row){
+        console.log(row)
+        if(row.dataset.type === 'tag') {
+            tagSearch.style.display = 'none';
+            const id = row.dataset.id;
+            const tagInfo = json.filter(obj => obj.id === Number.parseInt(id))[0]
+            const div = document.createElement("div");
+            div.className = 'displayTag big selectable';
+            div.style.border = '3px solid #' + tagInfo['color'];
+            div.style.backgroundColor = '#' + tagInfo['color'];
+            div.title = tagInfo['name'];
+            div.addEventListener("click", () => removeTagFromSearch(tagInfo.id, div))
+
+            selectedTags.push(tagInfo['id']);
+            tagDisplay.appendChild(div);
+            filterRows();
+        }
+        if(row.dataset.type === 'track') {
+
+        }
+    }
+
+    function removeTagFromSearch(id, div) {
+        selectedTags = selectedTags.filter(obj => obj !== Number.parseInt(id));
+        div.parentElement.removeChild(div);
+        console.log(Number.parseInt(id));
+        console.log(selectedTags);
+        filterRows();
+    }
+
+    function filterRows() {
+        console.log(selectedTags);
+        [... document.getElementsByClassName("trackRow")].forEach(row => {
+            let originalLength = row.dataset.tags;
+
+            let rowTagids = row.dataset.tags.split(";").map(id => Number.parseInt(id));
+            let filteredTags = selectedTags.filter(selectedTag => rowTagids.indexOf(selectedTag) == -1);
+
+            if(filteredTags.length == 0)
+                row.style.display = '';
+            else
+                row.style.display = 'none';
+        })
+    }
 
     function fetchPlaylists() {
         console.log('fetching tracks...')
@@ -213,11 +334,14 @@
             .then(htmlText => document.getElementById("tracks").innerHTML = htmlText);
     }
 
-    function showTrackInfo(title, trackid) {
+    function showTrackInfo(element) {
+        const trackJson = JSON.parse(element.dataset.model);
+        console.log(trackJson)
+
         document.getElementById("popup").style.display = '';
         document.getElementById("mainContent").classList.add('unfocused')
-        document.getElementById("popupTitle").innerText = title;
-        document.getElementById("popupBody").innerHTML = document.getElementById(trackid).innerHTML;
+        document.getElementById("popupTitle").innerText = trackJson.name;
+        document.getElementById("popupBody").innerHTML = document.getElementById(trackJson.id + '-feature').innerHTML;
     }
 
     function closePopup(){
@@ -288,11 +412,30 @@
         </div>
     </div>
     <div id="mainBody" style="text-align: center;">
-        <div style="display: flex; align-items: center;width:40%;margin:8% auto;position: relative;">
+        <div style="display: flex;flex-direction: column; align-items: center;width:40%;margin:8% auto 2% auto;position: relative;">
             <div style="display: flex; align-items: center;border: 3px solid var(--font-color);border-radius: 25px;height: 40px;width: 100%;background-color: inherit;color: inherit;font-size:large;padding-left: 15px;">
-                <input autoComplete="off" id="search" type="text">
-                <img class="icon" src="images/search.svg"
-                     alt="">
+                <input th:attr="data-model=${tagJson}" autoComplete="off" id="search" type="text">
+                <img class="icon" src="images/search.svg" alt="">
+            </div>
+            <div style="display: flex;gap: 5px;align-items: center;" id="tagDisplay">
+
+            </div>
+
+            <div id="tagSearch" style="display:none;width:100%;position: relative">
+                <!--/*@thymesVar id="tags" type="java.util.List<com.augmen.playlistr.Spotify.Tag.Tag>"*/-->
+                <table style="width: 100%;position: absolute;background-color: black;padding: 10px;">
+                    <tr class="heading">
+                        <td>Tags</td>
+                    </tr>
+                    <tbody th:if="${tags != null}">
+                    <tr th:each="tag, tagStat : ${tags}" class="rowContent tagRow" th:attr="data-id=${tag.id}" data-type="tag" >
+                        <td>
+                            <div class="displayTag big" th:style="'border: 3px solid #' + ${tag.color} + ';background-color:#' + ${tag.color}"></div>
+                            <span th:text="${tag.name}"></span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
         <div id="tracks">

@@ -1,6 +1,6 @@
 package com.augmen.playlistr.Spotify;
 
-import com.augmen.playlistr.Spotify.API.AudioFeature;
+import com.augmen.playlistr.Spotify.Tag.Tag;
 
 import java.util.List;
 

@@ -112,7 +112,7 @@ public class SpotifyClient {
         Queue<String> urlQueue = new PriorityQueue<>();
         urlQueue.add(SPOTIFY_API + "me/tracks");
         Tracks userTracks = null;
-//        do {
+        do {
             Map<String, String> queryParams = new HashMap<>();
             queryParams.put("limit", "50");
 
@@ -124,7 +124,7 @@ public class SpotifyClient {
                 if(userTracks.getNext() != null)
                     urlQueue.add(userTracks.getNext());
             }
-//        }  while (userTracks != null && urlQueue.size() > 0);
+        }  while (userTracks != null && urlQueue.size() > 0);
 
         return tracks;
     }

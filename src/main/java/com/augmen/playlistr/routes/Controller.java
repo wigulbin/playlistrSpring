@@ -1,14 +1,12 @@
 package com.augmen.playlistr.routes;
 
+import com.augmen.playlistr.Spotify.*;
 import com.augmen.playlistr.Spotify.API.AudioFeature;
 import com.augmen.playlistr.Spotify.API.Playlists;
 import com.augmen.playlistr.Spotify.API.Track;
-import com.augmen.playlistr.Spotify.API.Tracks;
-import com.augmen.playlistr.Spotify.Spotify;
-import com.augmen.playlistr.Spotify.SpotifyClient;
-import com.augmen.playlistr.Spotify.Tagger;
-import com.augmen.playlistr.Spotify.TrackInfo;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.augmen.playlistr.Spotify.Tag.Tag;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -16,8 +14,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -33,9 +29,13 @@ public class Controller {
     String appName;
 
     @GetMapping("/")
-    public String homePage(Model model) {
+    public String homePage(Model model) throws JsonProcessingException {
         Spotify.initialize();
+        ObjectMapper mapper = new ObjectMapper();
+
         model.addAttribute("appName", appName);
+        model.addAttribute("tagJson", mapper.writeValueAsString(Tag.generateDefault()));
+        model.addAttribute("tags", Tag.generateDefault());
         return "playlist";
     }
 
