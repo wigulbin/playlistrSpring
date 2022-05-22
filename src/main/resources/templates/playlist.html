@@ -92,8 +92,17 @@
 
         .icon {
             height: 25px;
-            filter: invert(0.6);
             margin-left: 5px;
+        }
+        .click{
+            cursor:pointer;
+        }
+
+        .greenFilter{
+            filter: invert(72%) sepia(33%) saturate(789%) hue-rotate(85deg) brightness(91%) contrast(87%);
+        }
+        .inverted{
+            filter:invert(0.6);
         }
 
         .listContent div {
@@ -225,6 +234,8 @@
     let topBar;
     let leftBar;
     let mainBody;
+    let createTag;
+    let createTagDiv;
     let selectedTags = [];
 
     let inputFocused = false;
@@ -236,6 +247,8 @@
         topBar = document.getElementById("topBar");
         leftBar = document.getElementById("leftBar");
         mainBody = document.getElementById("mainBody");
+        createTag = document.getElementById("mainBody");
+        createTagDiv = document.getElementById("createTagDiv");
         json = [... JSON.parse(searchBar.dataset.model)];
 
         addEventListeners();
@@ -249,6 +262,7 @@
         topBar.addEventListener('click', (e) => blurSearchBar(e));
         leftBar.addEventListener('click', (e) => blurSearchBar(e));
         mainBody.addEventListener('click', (e) => blurSearchBar(e));
+        createTag.addEventListener('click', (e) => createTagDialog(e));
     }
 
     function listItemListener(element) {
@@ -336,12 +350,24 @@
 
     function showTrackInfo(element) {
         const trackJson = JSON.parse(element.dataset.model);
-        console.log(trackJson)
+        console.log(trackJson);
+        const title = trackJson.name;
+        const html = document.getElementById(trackJson.id + '-feature').innerHTML;
 
+        showPopup(title, body);
+    }
+
+    function createTagDialog() {
+        const title = "Create new Tag";
+        const html = createTagDiv.innerHTML;
+        showPopup(title, html);
+    }
+
+    function showPopup(title, body) {
         document.getElementById("popup").style.display = '';
         document.getElementById("mainContent").classList.add('unfocused')
-        document.getElementById("popupTitle").innerText = trackJson.name;
-        document.getElementById("popupBody").innerHTML = document.getElementById(trackJson.id + '-feature').innerHTML;
+        document.getElementById("popupTitle").innerText = title;
+        document.getElementById("popupBody").innerHTML = body;
     }
 
     function closePopup(){
@@ -372,7 +398,7 @@
             <div class="listPart">
                 <div class="alignItemsCenter flexApart listItem">
                     <h3>All Songs</h3>
-                    <img class="icon"
+                    <img class="icon inverted"
                          src="images/caret-down.svg" alt="">
                 </div>
             </div>
@@ -380,7 +406,7 @@
             <div class="listPart">
                 <div class="alignItemsCenter flexApart listItem">
                     <h3>Liked Songs</h3>
-                    <img class="icon"
+                    <img class="icon inverted"
                          src="images/caret-down.svg" alt="">
                 </div>
             </div>
@@ -388,7 +414,7 @@
             <div class="listPart">
                 <div class="alignItemsCenter flexApart listItem">
                     <h3>Managed Playlists</h3>
-                    <img class="icon"
+                    <img class="icon inverted"
                          src="images/caret-down.svg" alt="">
                 </div>
                 <div class="listContent none">
@@ -400,7 +426,7 @@
             <div class="listPart">
                 <div class="listItem alignItemsCenter flexApart">
                     <h3>Your Playlists</h3>
-                    <img class="icon"
+                    <img class="icon inverted"
                          src="images/caret-down.svg" alt="">
                 </div>
 
@@ -413,10 +439,14 @@
     </div>
     <div id="mainBody" style="text-align: center;">
         <div style="display: flex;flex-direction: column; align-items: center;width:40%;margin:8% auto 2% auto;position: relative;">
-            <div style="display: flex; align-items: center;border: 3px solid var(--font-color);border-radius: 25px;height: 40px;width: 100%;background-color: inherit;color: inherit;font-size:large;padding-left: 15px;">
-                <input th:attr="data-model=${tagJson}" autoComplete="off" id="search" type="text">
-                <img class="icon" src="images/search.svg" alt="">
+            <div style="display: flex;align-items: center;width: 100%">
+                <div style="display: flex; align-items: center;border: 3px solid var(--font-color);border-radius: 25px;height: 40px;width: 100%;background-color: inherit;color: inherit;font-size:large;padding-left: 15px;">
+                    <input th:attr="data-model=${tagJson}" autoComplete="off" id="search" type="text">
+                    <img class="icon inverted" src="images/search.svg" alt="">
+                </div>
+                <img id="createTag" title="Create Tag" class="greenFilter icon click" src="images/plus-circle.svg" alt="">
             </div>
+
             <div style="display: flex;gap: 5px;align-items: center;" id="tagDisplay">
 
             </div>
@@ -452,11 +482,18 @@
 <div id="popup" style="display: none">
     <div style="border-bottom: 1px solid;" class="flexApart alignItemsCenter">
         <h2 id="popupTitle"></h2>
-        <img src="images/times-circle.svg" class="icon" alt="" onclick="closePopup()">
+        <img src="images/times-circle.svg" class="icon inverted" alt="" onclick="closePopup()">
     </div>
     <div id="popupBody">
 
     </div>
+</div>
+
+<div style="display: none">
+    <div id="createTagDiv">
+
+    </div>
+
 </div>
 </body>
 </html>

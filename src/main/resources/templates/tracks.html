@@ -25,7 +25,7 @@
         <td th:text="${trackInfo.track.album.name}"></td><!--/*@thymesVar id="featuresByTrackid" type="java.util.Map<java.lang.String, com.augmen.playlistr.Spotify.API.AudioFeature>"*/-->
         <td style="text-align: center">
             <div th:if="${trackInfo.audioFeature != null}">
-                <img src="images/info-circle.svg" class="icon" onclick="showTrackInfo(this)" th:attr="data-model=${trackInfo.trackJson}"/>
+                <img src="images/info-circle.svg" class="icon inverted" onclick="showTrackInfo(this)" th:attr="data-model=${trackInfo.trackJson}"/>
                 <div th:id="${trackInfo.track.id} + '-feature'" style="display: none;">
                     <table>
                         <tr class="heading">
@@ -93,7 +93,7 @@
         <td style="text-align: center">
             <div th:if="${trackInfo.tags != null && trackInfo.tags.size() > 0}">
                 <div style="position:relative">
-                    <img src="images/tags.svg" class="icon" th:attr="onclick=|showTrackInfo('${trackInfo.track.name} Tags', '${trackInfo.track.id}-tags')|"/>
+                    <img src="images/tags.svg" class="icon inverted" th:attr="onclick=|showTrackInfo('${trackInfo.track.name} Tags', '${trackInfo.track.id}-tags')|"/>
                 </div>
                 <div th:id="${trackInfo.track.id} + '-tags'" style="display: none;">
                     <table>
