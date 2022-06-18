@@ -2,14 +2,23 @@ package com.augmen.playlistr.Spotify.Tag;
 
 import com.augmen.playlistr.Spotify.Attributes.Attribute;
 import com.augmen.playlistr.Spotify.Attributes.RangeAttribute;
+import com.augmen.playlistr.services.TagService;
+import org.hibernate.annotations.Cascade;
 
+import javax.persistence.*;
 import java.util.*;
 
+@Entity
+@Table(name = "TAG")
 public class Tag {
+    @Id
+    @GeneratedValue
     private long id;
     private String name = "";
     private String color = "";
+    @OneToMany(cascade = {CascadeType.ALL})
     List<Attribute> attributes = new ArrayList<>();
+    @OneToMany
     List<Tag> tags = new ArrayList<>();
 
     public Tag(String name) {

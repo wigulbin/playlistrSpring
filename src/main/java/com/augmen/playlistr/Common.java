@@ -1,5 +1,8 @@
 package com.augmen.playlistr;
 
+import com.augmen.playlistr.Spotify.Tag.Tag;
+import com.augmen.playlistr.services.TagService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.json.JsonParser;
 import org.springframework.boot.json.JsonParserFactory;
 

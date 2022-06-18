@@ -1,0 +1,68 @@
+<html xmlns:th="https://www.thymeleaf.org" lang="en">
+
+<form action="" method="post">
+    <div><h1>Tag Editor</h1></div>
+
+    <div><h2>Tag Name</h2></div>
+
+    <div class="formBody" style="text-align: left;">
+        <div class="formGroup">
+            <label for="tagName">Name</label>
+            <div class="formField">
+                <input type="text" id="tagName">
+            </div>
+        </div>
+        <div class="formGroup">
+            <label for="tagName">Color</label>
+            <div class="formField">
+                <input type="color" id="tagColor">
+            </div>
+        </div>
+
+        <div >
+            <div class="formTitle" style="display: flex;justify-content: space-between;;">
+            <span class="clickToEdit">
+                <span id="name-">~Name~:</span>
+                <span style="display: none;" id="input-" class="input"><input onblur="finishEditName('')" type="text" value="~Name~"></span>
+            </span>
+                <div>
+                    <span class="click" onclick="editName('')">Edit</span>
+                    <span class="click" onclick="deleteName('')">Delete</span>
+                </div>
+            </div>
+            <div class="formGroup">
+                <div class="formSubGroup">
+                    <label for="tagName">Attribute</label>
+                    <div class="formField">
+                        <select name="attribute" id="attribute">
+                            <!--/*@thymesVar id="attributes" type="java.util.List<com.augmen.playlistr.Spotify.Attributes.Attribute>"*/-->
+                            <option th:each="option : ${attributes}" th:value="${option}" th:text="${option}"></option>
+                        </select>
+                    </div>
+                </div>
+                <div class="formSubGroup">
+                    <label for="minRange">Min</label>
+                    <div class="formField">
+                        <input id="minRange" name="minRange" type="range" oninput="ensureValueIsLessThan(this, document.getElementById('maxRange'));setValue(this);">
+                        <span id="minRangeValue"></span>
+                    </div>
+                </div>
+                <div class="formSubGroup">
+                    <label for="maxRange">Max</label>
+                    <div class="formField">
+                        <input id="maxRange" name="maxRange" type="range" oninput="ensureValueIsMoreThan(this, document.getElementById('minRange'));setValue(this);">
+                        <span id="maxRangeValue"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="formGroup">
+
+            </div>
+            <div class="formGroup">
+
+            </div>
+        </div>
+
+    </div>
+</form>
+</html>
